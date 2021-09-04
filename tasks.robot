@@ -7,6 +7,7 @@ Documentation     Orders robots from RobotSpareBin Industries Inc.
 
 Library    RPA.Archive
 Library    RPA.Browser.Playwright
+Library    RPA.Dialogs
 Library    RPA.HTTP
 Library    RPA.PDF
 Library    RPA.Tables
@@ -14,19 +15,28 @@ Library    OperatingSystem
 
 *** Variables ***
 ${ORDER_FORM_URL}    https://robotsparebinindustries.com/#/robot-order
-${ORDERS_URL}        https://robotsparebinindustries.com/orders.csv
+#${ORDERS_URL}        https://robotsparebinindustries.com/orders.csv
 ${ORDERS_FILENAME}   ${OUTPUT_DIR}${/}orders.csv
 ${PDF_DIR}           ${OUTPUT_DIR}${/}receipts${/}
 ${ZIP_FILENAME}      ${OUTPUT_DIR}${/}receipts.zip
 
 *** Keywords ***
+Input orders url dialog
+    Add heading       Process orders from
+    Add text input    url    label=Orders csv file url
+    ${result}=    Run dialog   title=Robot order processor
+    ${url}        Set Variable   ${result.url}
+    Should Not Be Empty          ${url}
+    [Return]  ${url}
+
 Open the robot order website
     # Open Browser     ${ORDER_FORM_URL}
     New Browser  headless=true
     New Page     ${ORDER_FORM_URL}
 
 Get Orders
-    RPA.HTTP.Download    ${ORDERS_URL}  ${ORDERS_FILENAME}  overwrite=true
+    [Arguments]          ${url}
+    RPA.HTTP.Download    ${url}  ${ORDERS_FILENAME}  overwrite=true
     ${table}             Read table from CSV    ${ORDERS_FILENAME}
     [Return]             ${table}
  
@@ -88,8 +98,9 @@ Create a ZIP file of the receipts
 
 *** Tasks ***
 Order robots from the manufacturer
+    ${csv}=       Input orders url dialog
     Open the robot order website
-    ${orders}=    Get orders
+    ${orders}=    Get orders  ${csv}
     FOR    ${row}    IN    @{orders}
         Close the annoying modal
         Fill the form    ${row}
