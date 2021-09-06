@@ -10,11 +10,12 @@ Library    RPA.Browser.Playwright
 Library    RPA.Dialogs
 Library    RPA.HTTP
 Library    RPA.PDF
+Library    RPA.Robocorp.Vault
 Library    RPA.Tables
 Library    OperatingSystem
 
 *** Variables ***
-${ORDER_FORM_URL}    https://robotsparebinindustries.com/#/robot-order
+# ${ORDER_FORM_URL}    https://robotsparebinindustries.com/#/robot-order
 #${ORDERS_URL}        https://robotsparebinindustries.com/orders.csv
 ${ORDERS_FILENAME}   ${OUTPUT_DIR}${/}orders.csv
 ${PDF_DIR}           ${OUTPUT_DIR}${/}receipts${/}
@@ -30,9 +31,9 @@ Input orders url dialog
     [Return]  ${url}
 
 Open the robot order website
-    # Open Browser     ${ORDER_FORM_URL}
+    &{secret}=   Get Secret    order_url
     New Browser  headless=true
-    New Page     ${ORDER_FORM_URL}
+    New Page     ${secret.url}
 
 Get Orders
     [Arguments]          ${url}
