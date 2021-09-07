@@ -15,25 +15,28 @@ Library    RPA.Tables
 Library    OperatingSystem
 
 *** Variables ***
-# ${ORDER_FORM_URL}    https://robotsparebinindustries.com/#/robot-order
-#${ORDERS_URL}        https://robotsparebinindustries.com/orders.csv
+${ORDER_FORM_URL}    https://robotsparebinindustries.com/#/robot-order
+${ORDERS_URL}        https://robotsparebinindustries.com/orders.csv
 ${ORDERS_FILENAME}   ${OUTPUT_DIR}${/}orders.csv
 ${PDF_DIR}           ${OUTPUT_DIR}${/}receipts${/}
 ${ZIP_FILENAME}      ${OUTPUT_DIR}${/}receipts.zip
 
 *** Keywords ***
 Input orders url dialog
-    Add heading       Process orders from
-    Add text input    url    label=Orders csv file url
-    ${result}=    Run dialog   title=Robot order processor
-    ${url}        Set Variable   ${result.url}
-    Should Not Be Empty          ${url}
-    [Return]  ${url}
+    [Return]    ${ORDERS_URL}
+    # Add heading       Process orders from
+    # Add text input    url    label=Orders csv file url
+    # ${result}=    Run dialog   title=Robot order processor
+    # ${url}        Set Variable   ${result.url}
+    # Should Not Be Empty          ${url}
+    # [Return]  ${url}
 
 Open the robot order website
-    &{secret}=   Get Secret    order_url
+    # &{secret}=   Get Secret    order_url
+    # ${url}=      ${secret.url}
+    ${url}=      ${ORDER_FORM_URL}
     New Browser  headless=true
-    New Page     ${secret.url}
+    New Page     ${url}
 
 Get Orders
     [Arguments]          ${url}
