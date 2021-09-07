@@ -34,7 +34,7 @@ Input orders url dialog
 Open the robot order website
     # &{secret}=   Get Secret    order_url
     # ${url}=      ${secret.url}
-    ${url}=      ${ORDER_FORM_URL}
+    ${url}=      Set Variable  ${ORDER_FORM_URL}
     New Browser  headless=true
     New Page     ${url}
 
