@@ -16,7 +16,7 @@ Library    OperatingSystem
 
 *** Variables ***
 # ${ORDER_FORM_URL}    https://robotsparebinindustries.com/#/robot-order
-#${ORDERS_URL}        https://robotsparebinindustries.com/orders.csv
+${ORDERS_URL}        https://robotsparebinindustries.com/orders.csv
 ${ORDERS_FILENAME}   ${OUTPUT_DIR}${/}orders.csv
 ${PDF_DIR}           ${OUTPUT_DIR}${/}receipts${/}
 ${ZIP_FILENAME}      ${OUTPUT_DIR}${/}receipts.zip
@@ -32,7 +32,7 @@ Input orders url dialog
 
 Open the robot order website
     &{secret}=   Get Secret    order_url
-    New Browser  headless=true
+    New Browser  headless=false
     New Page     ${secret.url}
 
 Get Orders
@@ -99,7 +99,8 @@ Create a ZIP file of the receipts
 
 *** Tasks ***
 Order robots from the manufacturer
-    ${csv}=       Input orders url dialog
+    # ${csv}=       Input orders url dialog
+    ${csv}=       Set Variable  ${ORDERS_URL}
     Open the robot order website
     ${orders}=    Get orders  ${csv}
     FOR    ${row}    IN    @{orders}
